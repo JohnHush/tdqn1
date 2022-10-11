@@ -397,7 +397,7 @@ class TradingEnv(gym.Env):
         ax1.legend(["Price", "Long",  "Short"])
         ax2.legend(["Capital", "Long", "Short"])
         plt.savefig(''.join(['Figures/', str(self.marketSymbol), '_Rendering', '.png']))
-        #plt.show()
+        plt.show()
 
 
     def setStartingPoint(self, startingPoint):

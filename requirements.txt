@@ -1,5 +1,5 @@
 # Python version
-python==3.7.4
+# python==3.7.4
 
 # Python libraries
 numpy
@@ -14,7 +14,7 @@ tqdm
 tabulate
 
 # Deep Learning framework
-pytorch
+torch
 tensorboard
 
 # OpenAI Gym RL framework
