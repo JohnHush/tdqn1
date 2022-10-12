@@ -34,6 +34,9 @@ from dataAugmentation import DataAugmentation
 from tradingEnv import TradingEnv
 
 
+#
+random.seed(0xCAFFE)
+torch.manual_seed(0xCAFFE)
 
 ###############################################################################
 ################################ Global variables #############################
