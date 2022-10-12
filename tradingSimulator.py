@@ -29,7 +29,7 @@ transactionCosts = percentageCosts[1]/100
 money = 100000
 
 # Variables specifying the default general training parameters
-numberOfEpisodes = 50
+numberOfEpisodes = 5
 
 
 def plotEntireTrading(trainingEnv, testingEnv):

@@ -15,6 +15,7 @@ import numpy as np
 
 from tradingEnv import TradingEnv
 
+np.random.seed(0xCAFFE)
 
 
 ###############################################################################
