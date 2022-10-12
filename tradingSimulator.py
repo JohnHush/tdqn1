@@ -2,14 +2,11 @@
 
 import pandas as pd
 
-from tqdm import tqdm
 from matplotlib import pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
 from tradingEnv import TradingEnv
-from TDQN import TDQN
-
 
 # Variables defining the default trading horizon
 startingDate = '2012-1-1'
@@ -81,32 +78,26 @@ def plotEntireTrading(trainingEnv, testingEnv):
 def simulateNewStrategy():
     from TDQN import TDQN
     stock = 'AAPL'
-    tradingStrategy = TDQN(observationSpace, actionSpace)
-    trainingParameters = [numberOfEpisodes]
+    tdqn = TDQN(observationSpace, actionSpace)
 
-    verbose = True
-    plotTraining = True
     rendering = True
     showPerformance = True
 
     trainingEnv = TradingEnv(stock, startingDate, splitingDate, money, stateLength, transactionCosts)
 
-    # Training of the trading strategy
-    trainingEnv = tradingStrategy.training(trainingEnv, trainingParameters=trainingParameters,
-                                           verbose=verbose, rendering=rendering,
-                                           plotTraining=plotTraining, showPerformance=showPerformance)
+    trainingEnv = tdqn.training(trainingEnv)
 
     # Initialize the trading environment associated with the testing phase
     testingEnv = TradingEnv(stock, splitingDate, endingDate, money, stateLength, transactionCosts)
 
     # Testing of the trading strategy
-    testingEnv = tradingStrategy.testing(trainingEnv, testingEnv, rendering=rendering, showPerformance=showPerformance)
+    testingEnv = tdqn.testing(trainingEnv, testingEnv, rendering=rendering, showPerformance=showPerformance)
 
     # Show the entire unified rendering of the training and testing phases
     if rendering:
         plotEntireTrading(trainingEnv, testingEnv)
 
-    return tradingStrategy, trainingEnv, testingEnv
+    return tdqn, trainingEnv, testingEnv
 
 
 if __name__ == '__main__':

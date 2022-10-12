@@ -399,7 +399,6 @@ class TradingEnv(gym.Env):
         plt.savefig(''.join(['Figures/', str(self.marketSymbol), '_Rendering', '.png']))
         plt.show()
 
-
     def setStartingPoint(self, startingPoint):
         """
         GOAL: Setting an arbitrary starting point regarding the trading activity.

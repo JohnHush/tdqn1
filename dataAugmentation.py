@@ -169,8 +169,7 @@ class DataAugmentation:
         # Return the new trading environment generated
         return newTradingEnv
 
-
-    def generate(self, tradingEnv):
+    def generate(self, tradingEnv) -> [TradingEnv]:
         """
         Generate a set of new trading environments based on the data
         augmentation techniques implemented.
