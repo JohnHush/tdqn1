@@ -283,12 +283,12 @@ class TDQN:
         score = np.zeros((len(training_envs), self.episode))
 
         testing_env = TradingEnv(
-            training_env.marketSymbol,
-            training_env.endingDate,
+            training_env.symbol,
+            training_env.date_end,
             '2020-1-1',
             training_env.data['Money'][0],
-            training_env.stateLength,
-            training_env.transactionCosts
+            training_env.state_duration,
+            training_env.slippage
         )
 
         train_sharpe_list = []
@@ -345,16 +345,16 @@ class TDQN:
             testing_env.reset()
         
         training_env = self.testing(training_env, training_env)
-        training_env.render()
+        # training_env.render()
 
         self.plot_train_test_performance(
             train_sharpe_list,
             test_sharpe_list,
-            training_env.marketSymbol,
+            training_env.symbol,
             'train_test_sharpe_ratio'
         )
-        for i in range(len(training_envs)):
-            self.plot_training_total_reward(score[i], training_env.marketSymbol)
+        # for i in range(len(training_envs)):
+        #     self.plot_training_total_reward(score[i], training_env.marketSymbol)
 
         analyser = PerformanceEstimator(training_env.data)
         analyser.displayPerformance('TDQN')
@@ -363,7 +363,7 @@ class TDQN:
 
         return training_env
 
-    def testing(self, training_env, env, rendering=False, showPerformance=False):
+    def testing(self, training_env, env, verbose=False):
         ds = DataAugmentation()
         env_smoothed = ds.lowPassFilter(env, self.low_pass_filter_order)
         training_env = ds.lowPassFilter(training_env, self.low_pass_filter_order)
@@ -386,11 +386,10 @@ class TDQN:
             qs0.append(q[0])
             qs1.append(q[1])
 
-        if rendering:
-            env.render()
-            self.plotQValues(qs0, qs1, env.marketSymbol)
+        if verbose:
+            # env.render()
+            # self.plotQValues(qs0, qs1, env.marketSymbol)
 
-        if showPerformance:
             analyser = PerformanceEstimator(env.data)
             analyser.displayPerformance('TDQN')
         
@@ -412,7 +411,7 @@ class TDQN:
         ax.plot(test_list)
         ax.legend(["Training", "Testing"])
         plt.savefig(''.join(['Figures/', symbol, '_', title, '.png']))
-        # plt.show()
+        plt.show()
 
     def plotQValues(self, QValues0, QValues1, marketSymbol):
         """

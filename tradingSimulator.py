@@ -1,35 +1,15 @@
 # coding=utf-8
 
 import pandas as pd
-
 from matplotlib import pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
 from tradingEnv import TradingEnv
-
-# Variables defining the default trading horizon
-startingDate = '2012-1-1'
-endingDate = '2020-1-1'
-splitingDate = '2018-1-1'
-
-# Variables defining the default observation and state spaces
-stateLength = 30
-observationSpace = 1 + (stateLength-1)*4
-actionSpace = 2
-
-# Variables setting up the default transaction costs
-percentageCosts = [0, 0.1, 0.2]
-transactionCosts = percentageCosts[1]/100
-
-# Variables specifying the default capital at the disposal of the trader
-money = 100000
-
-# Variables specifying the default general training parameters
-numberOfEpisodes = 5
+from TDQN import TDQN
 
 
-def plotEntireTrading(trainingEnv, testingEnv):
+def plotEntireTrading(trainingEnv, testingEnv, splitingDate):
 
     # Artificial trick to assert the continuity of the Money curve
     ratio = trainingEnv.data['Money'][-1]/testingEnv.data['Money'][0]
@@ -71,34 +51,36 @@ def plotEntireTrading(trainingEnv, testingEnv):
     # Generation of the two legends and plotting
     ax1.legend(["Price", "Long",  "Short", "Train/Test separation"])
     ax2.legend(["Capital", "Long", "Short", "Train/Test separation"])
-    plt.savefig(''.join(['Figures/', str(trainingEnv.marketSymbol), '_TrainingTestingRendering', '.png']))
+    plt.savefig(''.join(['Figures/', str(trainingEnv.symbol), '_TrainingTestingRendering', '.png']))
     #plt.show()
 
 
-def simulateNewStrategy():
-    from TDQN import TDQN
-    stock = 'AAPL'
-    tdqn = TDQN(observationSpace, actionSpace)
+def train_tqdn():
+    symbol = 'AAPL'
 
-    rendering = True
-    showPerformance = True
+    date_start = '2012-1-1'
+    date_split = '2018-1-1'
+    date_end = '2020-1-1'
 
-    trainingEnv = TradingEnv(stock, startingDate, splitingDate, money, stateLength, transactionCosts)
+    n_state = 30
+    n_obs = 1 + (n_state - 1) * 4
+    n_act = 2
 
-    trainingEnv = tdqn.training(trainingEnv)
+    slippage = 0.001
+    portfolio = 100000
 
-    # Initialize the trading environment associated with the testing phase
-    testingEnv = TradingEnv(stock, splitingDate, endingDate, money, stateLength, transactionCosts)
+    tdqn = TDQN(n_obs, n_act)
 
-    # Testing of the trading strategy
-    testingEnv = tdqn.testing(trainingEnv, testingEnv, rendering=rendering, showPerformance=showPerformance)
+    training_env = TradingEnv(symbol, date_start, date_split, portfolio, n_state, slippage)
+    training_env = tdqn.training(training_env)
 
-    # Show the entire unified rendering of the training and testing phases
-    if rendering:
-        plotEntireTrading(trainingEnv, testingEnv)
+    testing_env = TradingEnv(symbol, date_split, date_end, portfolio, n_state, slippage)
+    testing_env = tdqn.testing(training_env, testing_env, verbose=True)
 
-    return tdqn, trainingEnv, testingEnv
+    # plotEntireTrading(training_env, testing_env, date_split)
+
+    # return tdqn, training_env, testing_env
 
 
 if __name__ == '__main__':
-    simulateNewStrategy()
+    train_tqdn()

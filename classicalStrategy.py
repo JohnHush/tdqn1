@@ -525,7 +525,7 @@ class MovingAveragesTF(tradingStrategy):
         
         # If required, plot the training results
         if plotTraining:
-            self.plotTraining(results, bounds, step, trainingEnv.marketSymbol)
+            self.plotTraining(results, bounds, step, trainingEnv.symbol)
 
         # If required, print the strategy performance in a table
         if showPerformance:
@@ -799,7 +799,7 @@ class MovingAveragesMR(tradingStrategy):
         
         # If required, plot the training results
         if plotTraining:
-            self.plotTraining(results, bounds, step, trainingEnv.marketSymbol)
+            self.plotTraining(results, bounds, step, trainingEnv.symbol)
 
         # If required, print the strategy performance in a table
         if showPerformance:
